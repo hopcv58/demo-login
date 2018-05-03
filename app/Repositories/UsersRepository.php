@@ -8,7 +8,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class UsersRepository extends Repository
 {
@@ -26,12 +26,30 @@ class UsersRepository extends Repository
     }
 
     /**
-     * Get all users.
      * @param array $demands
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Model|null|static
      */
-    public function getAllUsers(array $demands)
+    public function createNewUser(array $demands)
     {
-        return $this->users->getAllUsers($demands);
+        $demands['password'] = bcrypt($demands['password']);
+        $demands['activated'] = 1;
+        $demands['rating'] = 0;
+        $demands['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
+        return $this->users->createNewUser($demands);
+    }
+
+    /**
+     * @param $id
+     * @param array $demands
+     * @return int
+     */
+    public function updateUserById($id, array $demands)
+    {
+        $demands['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
+        if (array_key_exists('password', $demands)) {
+            $demands['password'] = bcrypt($demands['password']);
+        }
+
+        return $this->users->updateUserById($id, $demands);
     }
 }

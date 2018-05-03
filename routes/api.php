@@ -17,6 +17,16 @@ Route::middleware('auth:api')->group(function () {
     // Define format id number.
     Route::pattern('id', '[0-9]{1,}');
 
-    Route::name('client_current')->get('users/all', 'ApiUserController@index');
+    Route::name('user_info')->get('users/info', 'ApiUserController@info');
+
+    Route::name('user_update')->post('users/update', 'ApiUserController@update');
+
+    Route::name('balance_deposit')->post('balance/deposit', 'ApiBalanceController@deposit');
+
+    Route::name('balance_withdraw')->post('balance/withdraw', 'ApiBalanceController@withdraw');
+
+    Route::name('balance_all')->get('balance/all', 'ApiBalanceController@all');
 
 });
+
+Route::name('user_create')->post('users/create', 'ApiUserController@create');

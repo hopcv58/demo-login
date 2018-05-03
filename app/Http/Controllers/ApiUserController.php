@@ -3,21 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\GetUserInfoRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Repositories\UsersRepository;
 
 class ApiUserController extends Controller
 {
     /**
-     * list all news.
+     * create user
      * @param CreateUserRequest $request
      * @param UsersRepository $userRepository
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function index(CreateUserRequest $request, UsersRepository $userRepository)
+    public function create(CreateUserRequest $request, UsersRepository $userRepository)
     {
         // Get news list.
-        $data = $userRepository->getAllUsers($request->all());
+        $id = $userRepository->createNewUser($request->all());
 
-        return $this->response($data);
+        return $this->response([
+            'user_id' => $id
+        ]);
+    }
+
+    /**
+     * get user's info
+     * @param GetUserInfoRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function info(GetUserInfoRequest $request)
+    {
+        return $this->response($request->user());
+    }
+
+    /**
+     * update user
+     * @param UpdateUserRequest $request
+     * @param UsersRepository $userRepository
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function update(UpdateUserRequest $request, UsersRepository $userRepository)
+    {
+        // Get news list.
+        $data = $userRepository->updateUserById($request->user()->id, $request->all());
+
+        return $this->response([
+            'success' => $data
+        ]);
     }
 }

@@ -8,7 +8,7 @@ namespace App\Components\Utilities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Request;
+use Illuminate\Support\Facades\Request;
 use App;
 
 class Responder

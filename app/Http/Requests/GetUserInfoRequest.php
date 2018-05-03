@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-class CreateUserRequest extends Request
+class GetUserInfoRequest extends Request
 {
     use RequestTrait;
 
@@ -19,11 +19,6 @@ class CreateUserRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|min:4|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'phone_number' => 'required|min:6|max:255',
-            'country_code' => 'required|integer|min:100000|max:999999',
-            'password' => 'required|min:6|max:50',
         ];
     }
 }

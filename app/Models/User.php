@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -39,15 +40,27 @@ class User extends Authenticatable
     }
 
     /**
-     * Setup use username column as login name. Default: email
      * @param $identifier
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|null|static
      */
     public function findForPassport($identifier) {
         return $this->where('email', $identifier)->first();
     }
 
-    public function getAllUsers(array $demands) {
-        return $this->where('email', $demands['email']);
+    /**
+     * @param array $demands
+     * @return \Illuminate\Database\Eloquent\Model|null|static
+     */
+    public function createNewUser(array $demands) {
+        return DB::table('users')->insertGetId($demands);
+    }
+
+    /**
+     * @param $id
+     * @param array $demands
+     * @return int
+     */
+    public function updateUserById($id, array $demands) {
+        return User::query()->where('id', $id)->update($demands);
     }
 }
