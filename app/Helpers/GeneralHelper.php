@@ -197,3 +197,17 @@ function condition_key (...$args)
     // Return unique key.
     return md5(serialize($args));
 }
+
+function pushToFrontEnd($data) {
+    $options = array(
+        'cluster' => 'ap1',
+        'encrypted' => true
+    );
+    $pusher = new \Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        $options
+    );
+    return $pusher->trigger('my-channel', 'my-event', $data);
+}

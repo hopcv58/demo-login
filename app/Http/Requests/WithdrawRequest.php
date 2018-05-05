@@ -23,9 +23,6 @@ class WithdrawRequest extends Request
                 'required',
                 'integer',
                 'exists:currencies,id',
-                function($attribute, $value, $parameters, $validator) {
-                    return $value == 0.06 ? false : true;
-                }
             ],
             'amount' => 'required|numeric'
         ];

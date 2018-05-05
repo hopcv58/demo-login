@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
+use Carbon\Carbon;
 use DB;
 
 class Withdraw extends Model

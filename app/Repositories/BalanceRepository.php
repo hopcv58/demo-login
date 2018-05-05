@@ -35,6 +35,11 @@ class BalanceRepository extends Repository
     /**
      * @var Trade $trade
      */
+    private $trade;
+
+    /**
+     * @var Order $order
+     */
     private $order;
 
     /**
@@ -51,6 +56,7 @@ class BalanceRepository extends Repository
         $this->currencies = new Currency();
         $this->deposit = new Deposit();
         $this->order = new Order();
+        $this->trade = new Trade();
         $this->withdraw = new Withdraw();
     }
 
@@ -58,20 +64,52 @@ class BalanceRepository extends Repository
     {
         $depositId = $this->deposit->deposit($currencyId, $amount, $user);
         $balanceId = $this->balances->deposit($currencyId, $amount, $user);
-        $balanceAfterDeposit = $this->balances->info($balanceId);
+        $balanceAfterDeposit = $this->balances->info($balanceId, $user);
         return $balanceAfterDeposit;
     }
 
     public function withdraw($currencyId, $amount, $user)
     {
-        $depositId = $this->withdraw->withdraw($currencyId, $amount, $user);
-        $balanceId = $this->balances->withdraw($currencyId, $amount, $user);
-        $balanceAfterDeposit = $this->balances->info($balanceId, $user);
-        return $balanceAfterDeposit;
+        $balance = $this->balances->getBalanceByUserAndCurrency($user, $currencyId);
+        if (!$balance) {
+            return [
+                'error' => 1,
+                'message' => 'You dont have any of this kind!',
+                'data' => null
+            ];
+        }
+        if ($balance->amount < $balance->frozen_amount + $amount) {
+            $balanceAfterWithdraw = $this->balances->info($balance->id, $user);
+            return [
+                'error' => 1,
+                'message' => 'You dont have enough balance!',
+                'data' => $balanceAfterWithdraw
+            ];
+        } else {
+            $balanceId = $this->balances->withdraw($currencyId, $amount, $user);
+            $depositId = $this->withdraw->withdraw($currencyId, $amount, $user);
+            $balanceAfterWithdraw = $this->balances->info($balance->id, $user);
+            return [
+                'error' => 0,
+                'message' => '',
+                'data' => $balanceAfterWithdraw
+            ];
+        }
+
     }
 
     public function all($user)
     {
         return $this->balances->getBalanceByUser($user);
+    }
+
+    public function allTrade($user)
+    {
+        return $this->order->getAllOrderByUser($user);
+    }
+
+    public function getPendingOrder($user)
+    {
+        return $this->order->getPendingOrderByUser($user);
     }
 }

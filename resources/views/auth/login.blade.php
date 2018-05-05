@@ -19,9 +19,9 @@
                 @endif
 
                 @if ($errors->has('g-recaptcha-response'))
-                    <span class="help-block">
-                        <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                    </span>
+                    <div class="alert alert-warning">
+                        {{ $errors->first('g-recaptcha-response') }}
+                    </div>
                 @endif
 
                 <div class="panel-body">
