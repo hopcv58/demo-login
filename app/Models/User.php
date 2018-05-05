@@ -63,4 +63,8 @@ class User extends Authenticatable
     public function updateUserById($id, array $demands) {
         return User::query()->where('id', $id)->update($demands);
     }
+
+    public function getAllUsers() {
+        return User::query()->get();
+    }
 }

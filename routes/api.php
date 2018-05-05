@@ -19,6 +19,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::name('user_info')->get('users/info', 'ApiUserController@info');
 
+    Route::name('user_all')->get('users/all', 'ApiUserController@all');
+
     Route::name('user_update')->post('users/update', 'ApiUserController@update');
 
     Route::name('balance_deposit')->post('balance/deposit', 'ApiBalanceController@deposit');

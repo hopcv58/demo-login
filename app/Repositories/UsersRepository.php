@@ -52,4 +52,9 @@ class UsersRepository extends Repository
 
         return $this->users->updateUserById($id, $demands);
     }
+
+    public function allUsers()
+    {
+        return $this->users->getAllUsers();
+    }
 }

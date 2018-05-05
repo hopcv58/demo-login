@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AllUserRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\GetUserInfoRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -49,5 +50,19 @@ class ApiUserController extends Controller
         return $this->response([
             'success' => $data
         ]);
+    }
+
+    /**
+     * get all user
+     * @param AllUserRequest $request
+     * @param UsersRepository $userRepository
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function all(AllUserRequest $request, UsersRepository $userRepository)
+    {
+        // Get news list.
+        $data = $userRepository->allUsers();
+
+        return $this->response($data);
     }
 }
