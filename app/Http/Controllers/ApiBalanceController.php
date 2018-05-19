@@ -40,12 +40,12 @@ class ApiBalanceController extends Controller
         $data = $userRepository->withdraw($request->currency_id, $request->amount, $request->user());
 
         if ($data['error'] == 0) {
-            $balanceAfterDeposit = $data['data'];
+            $balanceAfterWithdraw = $data['data'];
             return $this->response([
-                'currency' => $balanceAfterDeposit->short_name,
-                'deposited_amount' => $request->amount,
-                'frozen_amount' => $balanceAfterDeposit->frozen_amount,
-                'total' => $balanceAfterDeposit->amount,
+                'currency' => $balanceAfterWithdraw->short_name,
+                'withdraw_amount' => $request->amount,
+                'frozen_amount' => $balanceAfterWithdraw->frozen_amount,
+                'total' => $balanceAfterWithdraw->amount,
             ]);
         } else {
             return $this->response(null, $data['message']);

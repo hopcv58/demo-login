@@ -78,7 +78,7 @@ class BalanceRepository extends Repository
                 'data' => null
             ];
         }
-        if ($balance->amount < $balance->frozen_amount + $amount) {
+        if ($balance->amount < $amount) {
             $balanceAfterWithdraw = $this->balances->info($balance->id, $user);
             return [
                 'error' => 1,

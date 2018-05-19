@@ -23,7 +23,7 @@ class CreateUserRequest extends Request
             'email' => 'required|email|max:255|unique:users',
             'phone_number' => 'required|min:6|max:255',
             'country_code' => 'required|integer|min:100000|max:999999',
-            'password' => 'required|min:6|max:50',
+            'password' => 'required|min:8|max:50|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}/u',
         ];
     }
 }
