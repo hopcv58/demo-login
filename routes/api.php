@@ -33,6 +33,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::name('trades_pending')->get('trades/pending', 'ApiTradeController@pending');
 
+    Route::name('order_create')->post('order/create', 'ApiTradeController@createOrder');
+
 });
 
 Route::name('user_create')->post('users/create', 'ApiUserController@create');

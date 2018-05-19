@@ -13,5 +13,12 @@ class Currency extends Model
 
     public $timestamps = true;
 
-
+    public function getCurrencyByDemand($demand)
+    {
+        $query = DB::table('currencies');
+        foreach ($demand as $key => $value) {
+            $query = $query->where($key, $value);
+        }
+        return $query->first();
+    }
 }

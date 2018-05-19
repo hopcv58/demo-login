@@ -112,4 +112,56 @@ class BalanceRepository extends Repository
     {
         return $this->order->getPendingOrderByUser($user);
     }
+
+    public function getOrderByDemand($demand)
+    {
+        return $this->order->getOrderByDemand($demand);
+    }
+
+    public function createOrder($data)
+    {
+        return $this->order->createOrder($data);
+    }
+
+    public function createTrade($data)
+    {
+        return $this->order->createTrade($data);
+    }
+
+    public function getCurrencyByDemand($demand)
+    {
+        return $this->currencies->getCurrencyByDemand($demand);
+    }
+
+    public function getBalanceByUserAndCurrency($userId, $currencyId)
+    {
+        return $this->balances->getBalanceByUserAndCurrecy($userId, $currencyId);
+    }
+
+    public function getBalanceByDemands($demands)
+    {
+        return $this->balances->getBalanceByDemands($demands);
+    }
+
+    public function updateBalance($id, $demands)
+    {
+        return $this->balances->updateBalance($id, $demands);
+    }
+
+    public function freezeAmount($userId, $currencyId, $freezeAmount)
+    {
+        $balance = $this->balances->getBalanceByUserAndCurrecy($userId, $currencyId);
+        if ($balance->amount < $freezeAmount) {
+            return false;
+        }
+
+        return $this->balances->updateBalance($balance->id, [
+            'amount' => $balance->amount - $freezeAmount,
+            'frozen_amount' => $balance->frozen_amount + $freezeAmount
+        ]);
+    }
+
+    public function updateOrder($orderId, $orderData) {
+        return $this->order->updateOrder($orderId, $orderData);
+    }
 }

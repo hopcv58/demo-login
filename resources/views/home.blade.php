@@ -3,7 +3,7 @@
 @section('content')
     <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
     <script>
-
+        Pusher.logToConsole = true;
         var pusher = new Pusher('e8b5e40354edbce88902', {
             cluster: 'ap1',
             encrypted: true

@@ -21,4 +21,5 @@ return array(
     '6124b4c8570aa390c21fafd04a26c69f' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     '801c31d8ed748cfa537fa45402288c95' => $vendorDir . '/psy/psysh/src/functions.php',
     'decc78cc4436b1292c6c0d151b19445c' => $vendorDir . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
+    '8eeb9807d08404c43e7a8d0d87eb404b' => $vendorDir . '/rych/hash_pbkdf2-compat/src/hash_pbkdf2_compat.php',
 );

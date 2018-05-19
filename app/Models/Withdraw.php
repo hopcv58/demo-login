@@ -19,8 +19,7 @@ class Withdraw extends Model
         return DB::table('withdraw')->insertGetId([
             'user_id' => $user->id,
             'currency_id' => $currencyId,
-            'amount' => $amount,
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
+            'amount' => $amount
         ]);
     }
 }

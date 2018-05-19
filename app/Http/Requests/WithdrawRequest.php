@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
+
 class WithdrawRequest extends Request
 {
     use RequestTrait;
@@ -22,7 +24,9 @@ class WithdrawRequest extends Request
             'currency_id' => [
                 'required',
                 'integer',
-                'exists:currencies,id',
+                Rule::exists('balances', 'currency_id')->where(function ($query) {
+                    $query->where('user_id', $this->user()->id);
+                }),
             ],
             'amount' => 'required|numeric'
         ];

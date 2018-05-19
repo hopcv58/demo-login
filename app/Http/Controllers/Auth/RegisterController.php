@@ -78,7 +78,6 @@ class RegisterController extends Controller
             'phone_number' => $data['phone_number'],
             'activated' => 1,
             'rating' => 0,
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'country_code' => $data['country_code'],
             'password' => bcrypt($data['password']),
         ]);

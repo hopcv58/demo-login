@@ -57,7 +57,8 @@ function dir_size($dir)
     return $count_size;
 }
 
-function convert_size($bytes){
+function convert_size($bytes)
+{
     $kb = 1024;
     $mb = $kb * 1024;
     $gb = $mb * 1024;
@@ -103,7 +104,7 @@ function xmlify($data, $baseNode = 'xml', $xml = null)
 
     // Force it to be something useful
     if (!is_array($data) && !is_object($data)) {
-        $data = (array) $data;
+        $data = (array)$data;
     }
 
     foreach ($data as $key => $value) {
@@ -112,7 +113,7 @@ function xmlify($data, $baseNode = 'xml', $xml = null)
 
         // Convert our booleans to 0/1 integer values so they are not converted to blanks.
         if (is_bool($value)) {
-            $value = (int) $value;
+            $value = (int)$value;
         }
 
         // If there is another array found recrusively call this function.
@@ -161,7 +162,7 @@ function xmlify($data, $baseNode = 'xml', $xml = null)
  * Get SAPI type name.
  * @return string
  */
-function sapi_type ()
+function sapi_type()
 {
     switch (PHP_SAPI) {
         case 'cli':
@@ -190,7 +191,7 @@ function sapi_type ()
  * @param array $args
  * @return string unique key
  */
-function condition_key (...$args)
+function condition_key(...$args)
 {
     // Convert array params to string.
     // Calculate unique key from serialize string.
@@ -198,16 +199,31 @@ function condition_key (...$args)
     return md5(serialize($args));
 }
 
-function pushToFrontEnd($data) {
+function pushToFrontEnd($data)
+{
     $options = array(
         'cluster' => 'ap1',
         'encrypted' => true
     );
     $pusher = new \Pusher(
-        env('PUSHER_APP_KEY'),
-        env('PUSHER_APP_SECRET'),
-        env('PUSHER_APP_ID'),
+        'e8b5e40354edbce88902',
+        '51412e1df4bf3e02241f',
+        '520789',
         $options
     );
     return $pusher->trigger('my-channel', 'my-event', $data);
+}
+
+function pushToRabbit($exchange, $action, $data) {
+    $connection = new \PhpAmqpLib\Connection\AMQPStreamConnection(config('rabbit.host'), config('rabbit.port'),
+        config('rabbit.user'), config('rabbit.pass'));
+    $channel = $connection->channel();
+
+    $channel->exchange_declare($exchange, 'direct', false, false, false);
+
+    $msg = new \PhpAmqpLib\Message\AMQPMessage($data);
+
+    $channel->basic_publish($msg, 'BTC-USD', $action);
+    $channel->close();
+    $connection->close();
 }

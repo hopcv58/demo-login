@@ -14,7 +14,8 @@ class Order extends Model
 
     public $timestamps = true;
 
-    public function getAllOrderByUser($user) {
+    public function getAllOrderByUser($user)
+    {
         return DB::table('trades')
             ->join('orders as buy_order', 'buy_order.id', '=', 'trades.buy_order_id')
             ->join('orders as sell_order', 'sell_order.id', '=', 'trades.sell_order_id')
@@ -29,7 +30,8 @@ class Order extends Model
             ->get();
     }
 
-    public function getPendingOrderByUser($user) {
+    public function getPendingOrderByUser($user)
+    {
         return DB::table('trades')
             ->join('orders as buy_order', 'buy_order.id', '=', 'trades.buy_order_id')
             ->join('orders as sell_order', 'sell_order.id', '=', 'trades.sell_order_id')
@@ -40,10 +42,38 @@ class Order extends Model
                     ->orWhere('seller.id', '=', $user->id);
             })
             ->where(function ($query) {
-                $query->where('buy_order.order_status', '=', 4) //4: pending
-                    ->orWhere('sell_order.order_status', '=', 4); //4: pending
+                $query->where('buy_order.order_status', '=', 4)//4: pending
+                ->orWhere('sell_order.order_status', '=', 4); //4: pending
             })
             ->select('trades.*')
             ->get();
+    }
+
+    public function createOrder($demands)
+    {
+        return DB::table('orders')
+            ->insertGetId($demands);
+    }
+
+    public function createTrade($demands)
+    {
+        return DB::table('trades')
+            ->insertGetId($demands);
+    }
+
+    public function getOrderByDemand($demands)
+    {
+        $query = DB::table('orders');
+        foreach ($demands as $key => $value) {
+            $query = $query->where($key, $value);
+        }
+        return $query->first();
+    }
+
+    public function updateOrder($orderId, $orderData)
+    {
+        return DB::table('orders')
+            ->where('id', $orderId)
+            ->update($orderData);
     }
 }
