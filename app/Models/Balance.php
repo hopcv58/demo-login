@@ -116,6 +116,16 @@ class Balance extends Model
         return $query->first();
     }
 
+    public function createBalance($data)
+    {
+        return $query = DB::table('balances')->insertGetId($data);
+    }
+
+    public function createDeposit($data)
+    {
+        return $query = DB::table('deposit')->insertGetId($data);
+    }
+
     public function updateBalance($id, $data)
     {
         return $query = DB::table('balances')->where('id', $id)->update($data);

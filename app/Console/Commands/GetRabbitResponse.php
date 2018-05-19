@@ -52,6 +52,7 @@ class GetRabbitResponse extends Command
         $channel->queue_bind($queueName, $exchange, 'add');
         $channel->queue_bind($queueName, $exchange, 'cancel');
         $channel->queue_bind($queueName, $exchange, 'match');
+        $channel->queue_bind($queueName, $exchange, 'deposit.coin.BTC');
         echo ' [*] Listening from RabbitMq service. To exit press CTRL+C', "\n";
 
         //receive
@@ -81,6 +82,8 @@ class GetRabbitResponse extends Command
                         'trade_size' => $response->executedQuantity
                     ]);
 
+                    //create Address for resting
+                    $this->balanceRepository->getAddress($restingOrder->user_id, $restingOrder->currency_id);
                     //update balances
                     $restingCoin = $this->balanceRepository->getBalanceByDemands([
                         'user_id' => $restingOrder->user_id,
@@ -90,6 +93,8 @@ class GetRabbitResponse extends Command
                         'user_id' => $restingOrder->user_id,
                         'short_name' => 'USD'
                     ]);
+                    //create Address for incoming
+                    $this->balanceRepository->getAddress($incomingOrder->user_id, $incomingOrder->currency_id);
                     $incomingCoin = $this->balanceRepository->getBalanceByDemands([
                         'user_id' => $incomingOrder->user_id,
                         'currency_id' => $incomingOrder->currency_id
@@ -157,6 +162,22 @@ class GetRabbitResponse extends Command
                         $this->balanceRepository->updateBalance($balance->id, [
                             'amount' => $balance->amount + $order->order_size,
                             'frozen_amount' => $balance->frozen_amount - $order->order_size
+                        ]);
+                    }
+                    break;
+                case "deposit.coin.BTC":
+                    //$response = [address:'aaaa', amount: 0.01, status: pending/success]
+                    $balance = $this->balanceRepository->getBalanceByDemands([
+                        'address' => $response->address
+                    ]);
+                    $this->balanceRepository->createDeposit([
+                        'user_id' => $balance->user_id,
+                        'currency_id' => $balance->currency_id,
+                        'amount' => $response->amount
+                    ]);
+                    if ($response->status = 'success') {
+                        $this->balanceRepository->updateBalance($balance->id, [
+                            'amount' => $balance->amount + $response->amount
                         ]);
                     }
                     break;

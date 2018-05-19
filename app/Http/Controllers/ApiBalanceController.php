@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BalanceAllRequest;
 use App\Http\Requests\DepositRequest;
+use App\Http\Requests\GetAddressRequest;
 use App\Http\Requests\WithdrawRequest;
 use App\Repositories\BalanceRepository;
 
@@ -18,7 +19,7 @@ class ApiBalanceController extends Controller
     public function deposit(DepositRequest $request, BalanceRepository $userRepository)
     {
         // Get news list.
-        $balanceAfterDeposit = $userRepository->deposit($request->currency_id, $request->amount, $request->user());
+        $balanceAfterDeposit = $userRepository->deposit($request->amount, $request->user());
 
         return $this->response([
             'currency' => $balanceAfterDeposit->short_name,
@@ -56,5 +57,12 @@ class ApiBalanceController extends Controller
     public function all(BalanceAllRequest $request, BalanceRepository $balanceRepository) {
         $data = $balanceRepository->all($request->user());
         return $this->response($data);
+    }
+
+    public function getAddress(GetAddressRequest $request, BalanceRepository $balanceRepository) {
+        $address = $balanceRepository->getAddress($request->user()->id, $request->currency_id);
+        return $this->response([
+            'address' => $address
+        ]);
     }
 }

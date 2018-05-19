@@ -60,10 +60,13 @@ class BalanceRepository extends Repository
         $this->withdraw = new Withdraw();
     }
 
-    public function deposit($currencyId, $amount, $user)
+    public function deposit($amount, $user)
     {
-        $depositId = $this->deposit->deposit($currencyId, $amount, $user);
-        $balanceId = $this->balances->deposit($currencyId, $amount, $user);
+        $currency = $this->getCurrencyByDemand([
+            'short_name' => 'USD'
+        ]);
+        $depositId = $this->deposit->deposit($currency->id, $amount, $user);
+        $balanceId = $this->balances->deposit($currency->id, $amount, $user);
         $balanceAfterDeposit = $this->balances->info($balanceId, $user);
         return $balanceAfterDeposit;
     }
@@ -143,6 +146,16 @@ class BalanceRepository extends Repository
         return $this->balances->getBalanceByDemands($demands);
     }
 
+    public function createBalance($demands)
+    {
+        return $this->balances->createBalance($demands);
+    }
+
+    public function createDeposit($demands)
+    {
+        return $this->balances->createDeposit($demands);
+    }
+
     public function updateBalance($id, $demands)
     {
         return $this->balances->updateBalance($id, $demands);
@@ -163,5 +176,26 @@ class BalanceRepository extends Repository
 
     public function updateOrder($orderId, $orderData) {
         return $this->order->updateOrder($orderId, $orderData);
+    }
+
+    public function getAddress($userId, $currencyId) {
+        $balance = $this->getBalanceByDemands([
+            'user_id' => $userId,
+            'currency_id' => $currencyId
+        ]);
+        if (!$balance) {
+            // TODO Crete address for user with user_id = $userId
+            $address = 'aaaa';
+            $this->createBalance([
+                'user_id' => $userId,
+                'currency_id' => $currencyId,
+                'amount' => 0,
+                'frozen_amount' => 0,
+                'address' => $address
+            ]);
+            return $address;
+        } else {
+            return $balance->address;
+        }
     }
 }

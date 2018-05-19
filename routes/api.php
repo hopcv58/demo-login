@@ -29,6 +29,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::name('balance_all')->get('balance/all', 'ApiBalanceController@all');
 
+    Route::name('balance_address')->post('balance/address', 'ApiBalanceController@getAddress');
+
     Route::name('trades_all')->get('trades/all', 'ApiTradeController@all');
 
     Route::name('trades_pending')->get('trades/pending', 'ApiTradeController@pending');

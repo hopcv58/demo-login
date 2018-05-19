@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
+
 class DepositRequest extends Request
 {
     use RequestTrait;
@@ -19,7 +21,6 @@ class DepositRequest extends Request
     public function rules()
     {
         return [
-            'currency_id' => 'required|integer|exists:currencies,id',
             'amount' => 'required|numeric'
         ];
     }
