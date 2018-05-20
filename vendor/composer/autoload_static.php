@@ -459,6 +459,7 @@ class ComposerStaticInit1f3af9c0ec69b9212981f6a24db4727a
         'App\\Http\\Requests\\CreateOrderRequest' => __DIR__ . '/../..' . '/app/Http/Requests/CreateOrderRequest.php',
         'App\\Http\\Requests\\CreateUserRequest' => __DIR__ . '/../..' . '/app/Http/Requests/CreateUserRequest.php',
         'App\\Http\\Requests\\DepositRequest' => __DIR__ . '/../..' . '/app/Http/Requests/DepositRequest.php',
+        'App\\Http\\Requests\\GetAddressRequest' => __DIR__ . '/../..' . '/app/Http/Requests/GetAddressRequest.php',
         'App\\Http\\Requests\\GetUserInfoRequest' => __DIR__ . '/../..' . '/app/Http/Requests/GetUserInfoRequest.php',
         'App\\Http\\Requests\\Request' => __DIR__ . '/../..' . '/app/Http/Requests/Request.php',
         'App\\Http\\Requests\\RequestTrait' => __DIR__ . '/../..' . '/app/Http/Requests/RequestTrait.php',

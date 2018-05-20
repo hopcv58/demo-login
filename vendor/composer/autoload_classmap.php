@@ -42,6 +42,7 @@ return array(
     'App\\Http\\Requests\\CreateOrderRequest' => $baseDir . '/app/Http/Requests/CreateOrderRequest.php',
     'App\\Http\\Requests\\CreateUserRequest' => $baseDir . '/app/Http/Requests/CreateUserRequest.php',
     'App\\Http\\Requests\\DepositRequest' => $baseDir . '/app/Http/Requests/DepositRequest.php',
+    'App\\Http\\Requests\\GetAddressRequest' => $baseDir . '/app/Http/Requests/GetAddressRequest.php',
     'App\\Http\\Requests\\GetUserInfoRequest' => $baseDir . '/app/Http/Requests/GetUserInfoRequest.php',
     'App\\Http\\Requests\\Request' => $baseDir . '/app/Http/Requests/Request.php',
     'App\\Http\\Requests\\RequestTrait' => $baseDir . '/app/Http/Requests/RequestTrait.php',

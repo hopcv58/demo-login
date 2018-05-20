@@ -2,9 +2,12 @@
 
 namespace Illuminate\Foundation\Auth;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 trait AuthenticatesUsers
 {
@@ -109,6 +112,22 @@ trait AuthenticatesUsers
 
         $this->clearLoginAttempts($request);
 
+        $user = $this->guard()->user();
+        $userInfo = get_browser(null, true);
+        $body = 'OS: ' . $userInfo['platform'] . ', Browser: ' . $userInfo['browser']
+            . ', Time: ' . Carbon::now()->format('Y-m-d H:i:s');
+        Mail::send([], [], function ($message) use ($body, $user) {
+            $message->to([$user->email]);
+            $message->subject('Alert mail');
+            $message->setBody("<p>$body</p>", 'text/html');
+        });
+        Log::useDailyFiles(storage_path() . '/logs/login.log');
+        Log::info([
+            'User_id' => $user->id,
+            'OS' => $userInfo['platform'],
+            'Browser' => $userInfo['browser'],
+            'Status' => 'Success'
+        ]);
         return $this->authenticated($request, $this->guard()->user())
             ?: redirect()->intended($this->redirectPath());
     }
@@ -144,6 +163,14 @@ trait AuthenticatesUsers
             return response()->json($errors, 422);
         }
 
+        $userInfo = get_browser(null, true);
+        Log::useDailyFiles(storage_path() . '/logs/login.log');
+        Log::info([
+            'Email' => $request->email,
+            'OS' => $userInfo['platform'],
+            'Browser' => $userInfo['browser'],
+            'Status' => 'Failed'
+        ]);
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
             ->withErrors($errors);

@@ -10,7 +10,7 @@
         });
 
         var channel = pusher.subscribe('my-channel');
-        channel.bind('my-event', function(data) {
+        channel.bind('my-event', function (data) {
             alert(data.message);
         });
     </script>
