@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PasswordSecurity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class PasswordSecurityController extends Controller
 {
@@ -88,7 +89,7 @@ class PasswordSecurityController extends Controller
             return redirect()->back()->with("error","Your  password does not matches with your account password. Please try again.");
         }
 
-        $validatedData = $request->validate([
+        $validatedData = $this->validate($request, [
             'current-password' => 'required',
         ]);
         $user = Auth::user();

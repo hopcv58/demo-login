@@ -13,6 +13,7 @@ use App\Models\Deposit;
 use App\Models\Order;
 use App\Models\Trade;
 use App\Models\Withdraw;
+use BitWasp\BitcoinLib\BIP32;
 use Carbon\Carbon;
 
 class BalanceRepository extends Repository
@@ -184,8 +185,10 @@ class BalanceRepository extends Repository
             'currency_id' => $currencyId
         ]);
         if (!$balance) {
-            // TODO Crete address for user with user_id = $userId
-            $address = 'aaaa';
+            $pub="tpubDBWd2P7pnNifiVHMp9LNqzCZP4Mhu1KK5xt1bRbPsS1jfpq2QUNk8h3N8wteY1mXPHaChjwHfaQjp8BLgHRKGURf55s9icvbUh6aNAfEabz";
+            $nextpub = BIP32::build_key($pub, $userId);
+            $address = BIP32::key_to_address($nextpub[0]);
+
             $this->createBalance([
                 'user_id' => $userId,
                 'currency_id' => $currencyId,
