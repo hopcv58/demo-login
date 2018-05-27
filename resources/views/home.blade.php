@@ -9,9 +9,9 @@
             encrypted: true
         });
 
-        var channel = pusher.subscribe('my-channel');
-        channel.bind('my-event', function (data) {
-            alert(data.message);
+        var channel = pusher.subscribe('order_channel');
+        channel.bind('all_orders', function (data) {
+            alert(data);
         });
     </script>
     <div class="container">

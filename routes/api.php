@@ -37,6 +37,10 @@ Route::middleware('auth:api')->group(function () {
 
     Route::name('order_create')->post('order/create', 'ApiTradeController@createOrder');
 
+    Route::name('order_list')->get('order/list', 'ApiTradeController@listOrder');
+
 });
+
+Route::name('order_all')->get('order/all', 'ApiTradeController@allOrder');
 
 Route::name('user_create')->post('users/create', 'ApiUserController@create');

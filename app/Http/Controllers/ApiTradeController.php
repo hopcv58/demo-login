@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Utilities\Responder;
 use App\Http\Requests\CreateOrderRequest;
+use App\Http\Requests\OrderListRequest;
 use App\Http\Requests\TradeAllRequest;
 use App\Http\Requests\TradePendingRequest;
 use App\Repositories\BalanceRepository;
@@ -77,12 +78,28 @@ class ApiTradeController extends Controller
         $rabbitData = [
             'id' => $orderId,
             'side' => $request->order_side,
-            'type' =>  $request->order_type,
+            'type' => $request->order_type,
             'price' => $request->order_price,
             'size' => $request->order_size,
         ];
         pushToRabbit($exchange, 'enter', json_encode($rabbitData, JSON_FORCE_OBJECT));
 
+        $newOrder = $balanceRepository->getOrderByDemand([
+            'id' => $orderId
+        ]);
+        pushToFrontEnd('order_channel', 'all_orders', $newOrder);
         return $this->response(null, 'Create order successfully!');
+    }
+
+    public function allOrder(OrderListRequest $request, BalanceRepository $balanceRepository)
+    {
+        $data = $balanceRepository->getAllOrdersByDemand([]);
+        return $this->response($data);
+    }
+
+    public function listOrder(OrderListRequest $request, BalanceRepository $balanceRepository)
+    {
+        $data = $balanceRepository->getAllOrdersByDemand(['user_id' => $request->user()->id]);
+        return $this->response($data);
     }
 }

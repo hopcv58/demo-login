@@ -199,7 +199,7 @@ function condition_key(...$args)
     return md5(serialize($args));
 }
 
-function pushToFrontEnd($data)
+function pushToFrontEnd($channel, $event, $data)
 {
     $options = array(
         'cluster' => 'ap1',
@@ -211,7 +211,7 @@ function pushToFrontEnd($data)
         '520789',
         $options
     );
-    return $pusher->trigger('my-channel', 'my-event', $data);
+    return $pusher->trigger($channel, $event, $data);
 }
 
 function pushToRabbit($exchange, $action, $data) {

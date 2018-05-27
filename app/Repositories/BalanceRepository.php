@@ -121,6 +121,11 @@ class BalanceRepository extends Repository
         return $this->order->getOrderByDemand($demand);
     }
 
+    public function getAllOrdersByDemand($demand)
+    {
+        return $this->order->getAllOrdersByDemand($demand);
+    }
+
     public function createOrder($data)
     {
         return $this->order->createOrder($data);

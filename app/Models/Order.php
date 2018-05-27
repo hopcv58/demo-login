@@ -70,6 +70,15 @@ class Order extends Model
         return $query->first();
     }
 
+    public function getAllOrdersByDemand($demands)
+    {
+        $query = DB::table('orders');
+        foreach ($demands as $key => $value) {
+            $query = $query->where($key, $value);
+        }
+        return $query->get();
+    }
+
     public function updateOrder($orderId, $orderData)
     {
         return DB::table('orders')
