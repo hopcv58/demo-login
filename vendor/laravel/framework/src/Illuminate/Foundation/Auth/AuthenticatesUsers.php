@@ -72,7 +72,7 @@ trait AuthenticatesUsers
         $this->validate($request, [
             $this->username() => 'required|string',
             'password' => 'required|string',
-//            'g-recaptcha-response' => 'required|captcha',
+            // 'g-recaptcha-response' => 'required|captcha',
         ]);
     }
 
@@ -121,6 +121,7 @@ trait AuthenticatesUsers
             $message->subject('Alert mail');
             $message->setBody("<p>$body</p>", 'text/html');
         });
+
         Log::useDailyFiles(storage_path() . '/logs/login.log');
         Log::info([
             'User_id' => $user->id,

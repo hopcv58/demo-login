@@ -17,15 +17,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware(['auth', '2fa']);;
+Route::get('/home', 'HomeController@index')->name('home')->middleware(['auth', '2fa']);
 
 Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser')->name('user.activate');
 
 //2fa routes
-Route::get('/2fa','PasswordSecurityController@show2faForm');
-Route::post('/generate2faSecret','PasswordSecurityController@generate2faSecret')->name('generate2faSecret');
-Route::post('/2fa','PasswordSecurityController@enable2fa')->name('enable2fa');
-Route::post('/disable2fa','PasswordSecurityController@disable2fa')->name('disable2fa');
+Route::get('/2fa','PasswordSecurityController@show2faForm')->middleware(['auth', '2fa']);
+Route::post('/generate2faSecret','PasswordSecurityController@generate2faSecret')->name('generate2faSecret')->middleware(['auth', '2fa']);;
+Route::post('/2fa','PasswordSecurityController@enable2fa')->name('enable2fa')->middleware(['auth', '2fa']);
+Route::post('/disable2fa','PasswordSecurityController@disable2fa')->name('disable2fa')->middleware(['auth', '2fa']);
 Route::post('/2faVerify', function () {
     return redirect(URL()->previous());
-})->name('2faVerify')->middleware('2fa');
+})->name('2faVerify')->middleware(['auth', '2fa']);

@@ -56,11 +56,11 @@
                             </div>
                         </div>
 
-                        {{--<div class="form-group">--}}
-                            {{--<div class="col-md-6 col-md-offset-4">--}}
-                                {{--<div class="g-recaptcha" data-sitekey="6LfHOE0UAAAAAD0Pequ8yOL-oVLOI-ZY59B-QPua"></div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
+                        <!-- <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4">
+                                <div class="g-recaptcha" data-sitekey="6LdvoFsUAAAAAJspKRUFOZxuPkb0oFiA88tTJoux"></div>
+                            </div>
+                        </div> -->
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
