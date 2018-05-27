@@ -19,7 +19,8 @@ class Withdraw extends Model
         return DB::table('withdraw')->insertGetId([
             'user_id' => $user->id,
             'currency_id' => $currencyId,
-            'amount' => $amount
+            'amount' => $amount,
+            'is_success' => 0
         ]);
     }
 }

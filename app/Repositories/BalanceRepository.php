@@ -13,6 +13,7 @@ use App\Models\Deposit;
 use App\Models\Order;
 use App\Models\Trade;
 use App\Models\Withdraw;
+use BitWasp\BitcoinLib\BIP32;
 use Carbon\Carbon;
 
 class BalanceRepository extends Repository
@@ -67,7 +68,7 @@ class BalanceRepository extends Repository
         ]);
         $depositId = $this->deposit->deposit($currency->id, $amount, $user);
         $balanceId = $this->balances->deposit($currency->id, $amount, $user);
-        $balanceAfterDeposit = $this->balances->info($balanceId, $user);
+        $balanceAfterDeposit = $this->balances->info($balanceId, $user->id);
         return $balanceAfterDeposit;
     }
 
@@ -82,20 +83,29 @@ class BalanceRepository extends Repository
             ];
         }
         if ($balance->amount < $amount) {
-            $balanceAfterWithdraw = $this->balances->info($balance->id, $user);
+            $balanceAfterWithdraw = $this->balances->info($balance->id, $user->id);
             return [
                 'error' => 1,
                 'message' => 'You dont have enough balance!',
-                'data' => $balanceAfterWithdraw
+                'data' => null
             ];
         } else {
-            $balanceId = $this->balances->withdraw($currencyId, $amount, $user);
-            $depositId = $this->withdraw->withdraw($currencyId, $amount, $user);
-            $balanceAfterWithdraw = $this->balances->info($balance->id, $user);
+            $currency = $this->getCurrencyByDemand([
+                'short_name' => 'USD'
+            ]);
+            if($currencyId != $currency->id) {
+                $withdrawId = $this->withdraw->withdraw($currencyId, $amount, $user);
+                $address = $this->getAddress($user->id, $currencyId);
+                pushToRabbit('bitcoin', 'withdraw', json_encode([
+                    'id' => $withdrawId,
+                    'address' => $address,
+                    'amount' => $amount
+                ]));
+            }
             return [
                 'error' => 0,
-                'message' => '',
-                'data' => $balanceAfterWithdraw
+                'message' => 'Withdraw successfully',
+                'data' => $withdrawId
             ];
         }
 
@@ -151,6 +161,11 @@ class BalanceRepository extends Repository
         return $this->balances->getBalanceByDemands($demands);
     }
 
+    public function getWithdrawByDemands($demands)
+    {
+        return $this->balances->getWithdrawByDemands($demands);
+    }
+
     public function createBalance($demands)
     {
         return $this->balances->createBalance($demands);
@@ -164,6 +179,11 @@ class BalanceRepository extends Repository
     public function updateBalance($id, $demands)
     {
         return $this->balances->updateBalance($id, $demands);
+    }
+
+    public function updateWithdraw($id, $demands)
+    {
+        return $this->balances->updateWithdraw($id, $demands);
     }
 
     public function freezeAmount($userId, $currencyId, $freezeAmount)
@@ -189,8 +209,10 @@ class BalanceRepository extends Repository
             'currency_id' => $currencyId
         ]);
         if (!$balance) {
-            // TODO Crete address for user with user_id = $userId
-            $address = 'aaaa';
+            $pub=config('rabbit.bitcoin_pubkey');
+            $nextpub = BIP32::build_key($pub, $userId);
+            $address = BIP32::key_to_address($nextpub[0]);
+
             $this->createBalance([
                 'user_id' => $userId,
                 'currency_id' => $currencyId,

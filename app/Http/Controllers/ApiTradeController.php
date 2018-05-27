@@ -74,7 +74,7 @@ class ApiTradeController extends Controller
         ]);
         $orderId = $balanceRepository->createOrder($orderData);
         //push to rabbit
-        $exchange = $orderedCurrency->short_name . '-USD';
+        $action = $orderedCurrency->short_name . '.enter';
         $rabbitData = [
             'id' => $orderId,
             'side' => $request->order_side,
@@ -82,7 +82,7 @@ class ApiTradeController extends Controller
             'price' => $request->order_price,
             'size' => $request->order_size,
         ];
-        pushToRabbit($exchange, 'enter', json_encode($rabbitData, JSON_FORCE_OBJECT));
+        pushToRabbit('XXX-USD', $action, json_encode($rabbitData, JSON_FORCE_OBJECT), 'topic');
 
         $newOrder = $balanceRepository->getOrderByDemand([
             'id' => $orderId

@@ -214,16 +214,16 @@ function pushToFrontEnd($channel, $event, $data)
     return $pusher->trigger($channel, $event, $data);
 }
 
-function pushToRabbit($exchange, $action, $data) {
+function pushToRabbit($exchange, $action, $data, $type = 'direct') {
     $connection = new \PhpAmqpLib\Connection\AMQPStreamConnection(config('rabbit.host'), config('rabbit.port'),
         config('rabbit.user'), config('rabbit.pass'));
     $channel = $connection->channel();
 
-    $channel->exchange_declare($exchange, 'direct', false, false, false);
+    $channel->exchange_declare($exchange, $type, false, false, false);
 
     $msg = new \PhpAmqpLib\Message\AMQPMessage($data);
 
-    $channel->basic_publish($msg, 'BTC-USD', $action);
+    $channel->basic_publish($msg, $exchange, $action);
     $channel->close();
     $connection->close();
 }
