@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Balance;
 use App\Repositories\BalanceRepository;
 use Illuminate\Console\Command;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -24,6 +25,9 @@ class GetRabbitResponse extends Command
 
     private $balanceRepository;
 
+    private $balances;
+
+
     /**
      * Create a new command instance.
      *
@@ -33,6 +37,7 @@ class GetRabbitResponse extends Command
     {
         parent::__construct();
         $this->balanceRepository = new BalanceRepository();
+        $this->balances = new Balance();
     }
 
     /**
@@ -53,6 +58,7 @@ class GetRabbitResponse extends Command
         $channel->queue_bind($queueName, $exchange, 'cancel');
         $channel->queue_bind($queueName, $exchange, 'match');
         $channel->queue_bind($queueName, $exchange, 'deposit.coin.BTC');
+        $channel->queue_bind($queueName, $exchange, 'withdraw.coin.BTC');
         echo ' [*] Listening from RabbitMq service. To exit press CTRL+C', "\n";
 
         //receive
@@ -180,6 +186,19 @@ class GetRabbitResponse extends Command
                             'amount' => $balance->amount + $response->amount
                         ]);
                     }
+                    break;
+                case "withdraw.coin.BTC":
+                    //$response = [id:'1', status: 'success']
+                    $withdraw = $this->balanceRepository->getWithdrawByDemands([
+                        'id' => $response->id,
+                        'is_success' => 0
+                    ]);
+                    $this->balanceRepository->updateWithdraw($response->id, [
+                        'is_success' => 1
+                    ]);
+                    $balanceId = $this->balances->withdraw($withdraw->currency_id, $withdraw->amount, $withdraw->user_id);
+                    $balanceAfterWithdraw = $this->balances->info($balanceId, $withdraw->user_id);
+
                     break;
             }
         };

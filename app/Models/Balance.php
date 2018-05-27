@@ -49,12 +49,12 @@ class Balance extends Model
      * @param $user
      * @return mixed
      */
-    public function withdraw($currencyId, $amount, $user)
+    public function withdraw($currencyId, $amount, $userId)
     {
-        $balance = DB::table('balances')->where('user_id', $user->id)
+        $balance = DB::table('balances')->where('user_id', $userId)
             ->where('currency_id', $currencyId)
             ->first();
-        DB::table('balances')->where('user_id', '=', $user->id)
+        DB::table('balances')->where('user_id', '=', $userId)
             ->where('currency_id', '=', $currencyId)
             ->update([
                 'amount' => $balance->amount - $amount
@@ -63,12 +63,12 @@ class Balance extends Model
         return $balance->id;
     }
 
-    public function info($balanceId, $user)
+    public function info($balanceId, $userId)
     {
         return DB::table('balances')
             ->join('currencies', 'balances.currency_id', '=', 'currencies.id')
             ->where('balances.id', $balanceId)
-            ->where('balances.user_id', $user->id)
+            ->where('balances.user_id', $userId)
             ->first();
     }
 
@@ -116,6 +116,15 @@ class Balance extends Model
         return $query->first();
     }
 
+    public function getWithdrawByDemands($demands)
+    {
+        $query = DB::table('withdraw');
+        foreach ($demands as $key => $value) {
+            $query = $query->where($key, $value);
+        }
+        return $query->first();
+    }
+
     public function createBalance($data)
     {
         return $query = DB::table('balances')->insertGetId($data);
@@ -129,6 +138,11 @@ class Balance extends Model
     public function updateBalance($id, $data)
     {
         return $query = DB::table('balances')->where('id', $id)->update($data);
+    }
+
+    public function updateWithdraw($id, $data)
+    {
+        return $query = DB::table('withdraw')->where('id', $id)->update($data);
     }
 
     public function getBalanceByUserAndCurrency($user, $currencyId)
